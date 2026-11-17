@@ -181,7 +181,7 @@ var Enemies = (function () {
           if (e.summonCd <= 0) {
             e.summonCd = 9;
             for (var s = 0; s < 3; s++) spawn('skitter', e.x + (Math.random() - 0.5) * 60, e.y + (Math.random() - 0.5) * 60);
-            Game.addFloat(e.x, e.y - 40, 'THE HERALD CALLS', '#ff3df0');
+            Game.addFloat(640, 640, 'THE HERALD CALLS', '#ff3df0');
           }
         }
         if (e.type === 'sovereign') {
