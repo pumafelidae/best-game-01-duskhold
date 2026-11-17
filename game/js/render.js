@@ -74,6 +74,18 @@ var Render = (function () {
     }
   }
 
+  function drawMuzzle(ctx, S) {
+    // Muzzle flash: a bright blink at the lantern, gone in ~70 ms.
+    if (!S.muzzleT || S.muzzleT <= 0) return;
+    var a = Math.max(0, S.muzzleT / 0.07);
+    var g = ctx.createRadialGradient(S.muzzleX, S.muzzleY, 0, S.muzzleX, S.muzzleY, 26);
+    g.addColorStop(0, 'rgba(255, 243, 196, ' + (0.95 * a) + ')');
+    g.addColorStop(0.5, 'rgba(255, 214, 130, ' + (0.6 * a) + ')');
+    g.addColorStop(1, 'rgba(255, 166, 66, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(S.muzzleX, S.muzzleY, 26, 0, Math.PI * 2); ctx.fill();
+  }
+
   function drawGlobs(ctx, S) {
     for (var i = 0; i < S.globs.length; i++) {
       var b = S.globs[i];
@@ -150,6 +162,7 @@ var Render = (function () {
     LightSys.drawDarkness(ctx, S.wave);
     // Light itself shines in the dark: bolts, globs and eyes go above the mask.
     drawBullets(ctx, S);
+    drawMuzzle(ctx, S);
     drawGlobs(ctx, S);
     Enemies.drawEyes(ctx, S);
     drawParticles(ctx, S);

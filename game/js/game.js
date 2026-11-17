@@ -28,6 +28,9 @@ var Game = (function () {
     floats: [],
     pickups: [],
     trauma: 0,
+    muzzleT: 0,
+    muzzleX: 0,
+    muzzleY: 0,
     banner: '',
     bannerT: 0,
     betweenT: 0,
@@ -132,6 +135,7 @@ var Game = (function () {
       S.bannerT -= realDt;
       if (S.bannerT <= 0) S.banner = '';
     }
+    if (S.muzzleT > 0) S.muzzleT -= dt;
     if (S.streakT > 0) {
       S.streakT -= dt;
       if (S.streakT <= 0) S.streak = 0;
@@ -167,6 +171,7 @@ var Game = (function () {
     S.floats = [];
     S.pickups = [];
     S.trauma = 0;
+    S.muzzleT = 0;
     S.banner = '';
     S.bannerT = 0;
     S._offerOpen = false;
@@ -207,6 +212,12 @@ var Game = (function () {
 
   function onWin() {
     S.wavesCleared = 10;
+    // A clean win screen: no leftover damage numbers, streak floats,
+    // particles, bolts or globs drifting over the DAWN BREAKS text.
+    S.floats = [];
+    S.particles = [];
+    S.bullets = [];
+    S.globs = [];
     UI.set('win');
     LightSys.setDrain(0);
     AudioSys.play('win');
@@ -254,6 +265,10 @@ var Game = (function () {
       });
     }
     addParticle(p.x + Math.cos(p.aim) * 22, p.y + Math.sin(p.aim) * 22, '#ffd682', 2);
+    // Muzzle flash: a bright blink at the lantern for one frame of fire.
+    S.muzzleX = p.x + Math.cos(p.aim) * 26;
+    S.muzzleY = p.y + Math.sin(p.aim) * 26;
+    S.muzzleT = 0.07;
   }
 
   function updateBullets(dt) {
@@ -378,7 +393,7 @@ var Game = (function () {
       }
       if (d < p.r + 10) {
         if (pk.kind === 'shard') { Player.addXp(1); AudioSys.play('pickup'); }
-        else { S.gold += 2; AudioSys.play('coin'); }
+        else { S.gold += 2; addFloat(pk.x, pk.y - 12, '+2g', '#ffd682'); AudioSys.play('coin'); }
         S.pickups.splice(i, 1);
       }
     }

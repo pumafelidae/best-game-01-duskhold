@@ -50,6 +50,9 @@ var Waves = (function () {
         Enemies.spawnAtEdge(type);
         if (type === 'herald' || type === 'sovereign') {
           Game.addFloat(640, 200, type === 'herald' ? 'THE GLOOM HERALD' : 'THE NIGHT SOVEREIGN', '#ff3df0');
+          // Boss entrance: a banner and a shake so the arrival lands.
+          Game.setBanner(type === 'herald' ? 'THE GLOOM HERALD' : 'THE NIGHT SOVEREIGN', 2);
+          Game.addTrauma(0.4);
           AudioSys.play('boss');
           if (type === 'sovereign') LightSys.setDrain(25);
         }
