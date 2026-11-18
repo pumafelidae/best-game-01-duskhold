@@ -3,7 +3,7 @@
 // repository into /output (or $MAKEFUN_OUTPUT_DIR) and writes
 // /output/dossier.json with buildDossier from vendor/makefun-game.ts.
 // Deterministic: two runs write the same bytes.
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-game.ts';
@@ -17,8 +17,8 @@ function copyTree(name: string): void {
   cpSync(src, join(outDir, name), { recursive: true });
 }
 
-rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
+for (const entry of readdirSync(outDir)) rmSync(join(outDir, entry), { recursive: true, force: true });
 copyTree('game');
 copyTree('screenshots');
 const dossier = buildDossier(outDir, {
